@@ -1,0 +1,11 @@
+[tool.ruff]
+# Target Python 3.12 (adjust if needed)
+target-version = "py312"
+
+[tool.ruff.lint]
+# Enable a sensible set of rules for a beginner Python project
+select = ["E", "F", "W", "I"]
+ignore = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
