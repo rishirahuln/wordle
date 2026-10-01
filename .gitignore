@@ -18,7 +18,7 @@ htmlcov/
 .ruff_cache/
 
 # Game-generated data (optional: remove this line if you want to track history)
-history.jsonl
+history.json
 
 # macOS
 .DS_Store
