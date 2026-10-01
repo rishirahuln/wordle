@@ -3,7 +3,7 @@
 import json
 import os
 
-HISTORY_FILE = "history.json"
+HISTORY_FILE = "history.jsonl"
 
 
 class GameHistory:
@@ -32,18 +32,29 @@ class GameHistory:
         self._load()
 
     def _load(self) -> None:
-        """Read history from disk; silently start fresh if the file is absent."""
+        """Read history from disk; silently start fresh if the file is absent.
+
+        The file is stored in JSON Lines format: one JSON object per line.
+        Blank lines are skipped silently.
+        """
         if os.path.exists(HISTORY_FILE):
             with open(HISTORY_FILE, encoding="utf-8") as f:
-                self.games = json.load(f)
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        self.games.append(json.loads(line))
 
     def save(self) -> None:
-        """Write the current history list to ``history.json``."""
-        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-            json.dump(self.games, f, indent=2)
+        """Append the most recent game record to ``history.json``.
 
-    def record(self, won: bool, attempts: int, word: str) -> None:
-        """Add a completed game to the history (does not save automatically).
+        Opens the file in append mode so only the new record is written,
+        regardless of how many previous records exist.
+        """
+        with open(HISTORY_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(self.games[-1]) + "\n")
+
+    def record_and_save(self, won: bool, attempts: int, word: str) -> None:
+        """Add a completed game to the history and save it.
 
         Args:
             won:      True if the player guessed the word correctly.
@@ -51,6 +62,8 @@ class GameHistory:
             word:     The secret word for the completed game.
         """
         self.games.append({"won": won, "attempts": attempts, "word": word})
+
+        self.save()
 
     # ------------------------------------------------------------------ #
     # Statistics properties                                                #
