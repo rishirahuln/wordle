@@ -125,12 +125,11 @@ def main() -> None:
     # ------------------------------------------------------------------ #
     # Persist and display stats                                            #
     # ------------------------------------------------------------------ #
-    history.record(
+    history.record_and_save(
         won=game.is_won,
         attempts=len(game.guesses),
         word=secret,
     )
-    history.save()
     display_stats(history)
 
 
